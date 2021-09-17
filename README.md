@@ -1,10 +1,10 @@
 # river-crossing-problem
-In this repository I want to try to resolve the river crossing riddle about the 3 cannibals and missionaries using DFS and BFS algorithms.
+In this repository I want to try to resolve the river crossing riddle about the 3 cannibals and 3 missionaries using DFS and BFS algorithms.
 
 --- 
 
 ## Description of the problem
-In repository an implementation of the BFS and DFS for solving the missionaries and cannibals problem.
+In this repository will be an implementation of the BFS and DFS for solving the missionaries and cannibals problem.
 
 ### The problem
 In the missionaries and cannibals problem, consists on: 
