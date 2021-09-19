@@ -30,6 +30,7 @@ if __name__ == '__main__':
     # print(node)
 
     solution = Solution((3, 3, 1), (0, 0, 0))
-    solution.bfs_search()
+    # solution.bfs_search()
+    solution.dfs_search()
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

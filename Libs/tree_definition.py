@@ -66,7 +66,8 @@ def is_state_safe(current_state, next_state, limits):
     if next_missionaries > missionaries_limit or next_cannibals > cannibals_limit:
         isLimitExceeded = True
     # Number of Missionaries can't be less of Cannibals on the other side
-    if next_missionaries != missionaries_limit and ((missionaries_limit - next_missionaries) < (cannibals_limit - next_cannibals)):
+    if next_missionaries != missionaries_limit and (
+            (missionaries_limit - next_missionaries) < (cannibals_limit - next_cannibals)):
         areMoreCannibals = True
 
     if isLessThanZero or areMoreCannibals or isLimitExceeded:
@@ -87,12 +88,13 @@ class CannibalMissionaryTree:
         [list] goal state = ()
     '''
 
-    def __init__(self, current_state=(3, 3, 1), limits=(3,3)):
+    def __init__(self, current_state=(3, 3, 1), limits=(3, 3)):
         self.current_state = current_state
         self.__current_cannibals = current_state[0]
         self.__current_missionaries = current_state[1]
         self.__current_boat_position = current_state[2]
         self.__limits = limits
+
     '''
     Definition of getters and setters
     '''
@@ -116,7 +118,7 @@ class CannibalMissionaryTree:
         boat_position = self.get_boat_position()
         total_next_state = get_after_carry_states(self.current_state)
         for state in total_next_state:
-            if is_state_safe(self.current_state, state,self.__limits):
+            if is_state_safe(self.current_state, state, self.__limits):
                 safe_next_states.append(tuple(state))
         return safe_next_states
 
@@ -174,7 +176,7 @@ class Solution:
         for element in self.explored:
             element_list.append(element.get_state())
         return element_list
-    
+
     def get_current_iteration_info(self):
         message = "\n________________________________\n"
         message += "Iteration No."
@@ -184,7 +186,7 @@ class Solution:
         message += "\nExplored is:\n"
         message += str(self.get_explored_elements())
         return message
-    
+
     def get_node_backchain(self, end_node):
         return_path = []
         while end_node:
@@ -243,3 +245,42 @@ class Solution:
 
     def dfs_search(self):
         solutionFound = False
+        # Initialize Node with the Start State Information
+        initial_node = Node(self.start_state)
+        initial_node.update_children()
+
+        # Start the frontier information
+        self.frontier.append(initial_node)
+        # "Initial node is: \n"
+        # print(initial_node)
+        # print("\n")
+        checking_set = set()  # Initialize empty set to perform the checking easier
+
+        while self.frontier:
+            print(self.get_current_iteration_info())
+            # Get the first frontier Node to read
+            frontier_node = self.frontier.pop(0)
+            # print(frontier_node)
+            # Update the Frontier and the Explored Lists
+            self.explored.append(frontier_node)
+            self.nodes_visited += 1
+            checking_set.add(tuple(frontier_node.get_state()))
+
+            # Check if Node is Goal State
+            if frontier_node.get_state() == self.goal_state:
+                solutionFound = True
+                print("\nSolution Found...")
+                print(self.get_node_backchain(frontier_node))
+                return True
+
+            # Append successors to the frontier list
+            children_frontier_node = frontier_node.get_children()
+            for child in children_frontier_node:
+                child_t = tuple(child)
+                if child_t in checking_set:
+                    continue
+                else:
+                    new_node = Node(state=child, parent=frontier_node, children=None)
+                    new_node.update_children()
+                    self.frontier.insert(0, new_node)
+        return solutionFound
