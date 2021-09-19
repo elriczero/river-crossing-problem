@@ -43,30 +43,33 @@ def get_after_carry_states(input_state):
     return states_list
 
 
-def is_state_safe(current_state, next_state):
-    # missionary_limit = limits[0]
-    # cannibal_limit = limits[1]
+def is_state_safe(current_state, next_state, limits):
+    missionaries_limit = limits[0]
+    cannibals_limit = limits[1]
     # Current State values
     current_missionaries = current_state[0]
     current_cannibals = current_state[1]
     # Next State Values
     next_missionaries = next_state[0]
     next_cannibals = next_state[1]
-    if (
-            # Neither Missionaries or Cannibals can be less than Zero
-            next_missionaries < 0 or
-            next_cannibals < 0 or
-            # Number of Missionaries can't be less than the Number Cannibals
-            (next_missionaries != 0 and next_missionaries < next_cannibals) or
-            # Number of Missionaries or Cannibals in the current state can't be less than the ones in the next state
-            current_missionaries < next_missionaries or
-            current_cannibals < next_cannibals or
-            # Number of Missionaries can't be less of Cannibals on the other side
-            (
-                    next_missionaries != current_missionaries and
-                    ((current_missionaries - next_missionaries) < (current_cannibals - next_cannibals))
-            )
-    ):
+    isLessThanZero = False
+    areMoreCannibals = False
+    isLimitExceeded = False
+
+    if next_missionaries < 0 or next_cannibals < 0:
+        isLessThanZero = True
+    # Neither Missionaries or Cannibals can be less than Zero
+    # Number of Missionaries can't be less than the Number Cannibals
+    if next_missionaries != 0 and next_missionaries < next_cannibals:
+        areMoreCannibals = True
+    # Number of Missionaries or Cannibals in the current state can't be less than the ones in the next state
+    if next_missionaries > missionaries_limit or next_cannibals > cannibals_limit:
+        isLimitExceeded = True
+    # Number of Missionaries can't be less of Cannibals on the other side
+    if next_missionaries != missionaries_limit and ((missionaries_limit - next_missionaries) < (cannibals_limit - next_cannibals)):
+        areMoreCannibals = True
+
+    if isLessThanZero or areMoreCannibals or isLimitExceeded:
         return False
     else:
         return True
@@ -84,12 +87,12 @@ class CannibalMissionaryTree:
         [list] goal state = ()
     '''
 
-    def __init__(self, current_state=[3, 3, 1]):
+    def __init__(self, current_state=(3, 3, 1), limits=(3,3)):
         self.current_state = current_state
         self.__current_cannibals = current_state[0]
         self.__current_missionaries = current_state[1]
         self.__current_boat_position = current_state[2]
-
+        self.__limits = limits
     '''
     Definition of getters and setters
     '''
@@ -113,12 +116,12 @@ class CannibalMissionaryTree:
         boat_position = self.get_boat_position()
         total_next_state = get_after_carry_states(self.current_state)
         for state in total_next_state:
-            if is_state_safe(self.current_state, state):
-                safe_next_states.append(state)
+            if is_state_safe(self.current_state, state,self.__limits):
+                safe_next_states.append(tuple(state))
         return safe_next_states
 
     def print_successor_states(self):
-        print("Succesor states are:", self.get_successor_states())
+        print("Successor states are:", self.get_successor_states())
 
 
 class Node:
@@ -137,12 +140,13 @@ class Node:
         return self.__parent
 
     def __str__(self):
-        nodeInformation = "\n-----------------------\n"
+        nodeInformation = "\n_________________________\n"
         nodeInformation += "Node Information is:"
-        nodeInformation += "\nNode state value{:s}"
-        nodeInformation += "\nNode parent: {:s}"
-        nodeInformation += "\nNode children: {:s}"
-        nodeInformation = nodeInformation.format(str(self.get_state()),str(self.get_parent()),str(self.get_parent()))
+        nodeInformation += "\nState: {:s}"
+        nodeInformation += "\nParent: {:s}"
+        nodeInformation += "\nChildren: {:s}"
+        nodeInformation = nodeInformation.format(str(self.get_state()), str(self.get_parent()),
+                                                 str(self.get_children()))
         return nodeInformation
 
     def update_children(self):
@@ -151,14 +155,77 @@ class Node:
 
 
 class Solution:
-    def __init__(self, search_method, start_state, goal_state):
+    def __init__(self, start_state, goal_state):
         self.frontier = []
         self.explored = []
-        self.search_method = search_method  # Must be BFS or DFS
         self.start_state = start_state
         self.goal_state = goal_state
+        self.nodes_visited = 0
+        self.path = []
 
-    def search(self):
+    def get_frontier_elements(self):
+        element_list = []
+        for element in self.frontier:
+            element_list.append(element.get_state())
+        return element_list
+
+    def get_explored_elements(self):
+        element_list = []
+        for element in self.explored:
+            element_list.append(element.get_state())
+        return element_list
+
+    def get_node_backchain(self, end_node):
+        return_path = []
+        while end_node:
+            return_path.append(end_node.get_state())
+            end_node = end_node.get_parent()
+        return_path.reverse()
+        return return_path
+
+    def bfs_search(self):
         # Initialize Node with the Start State Information
         initial_node = Node(self.start_state)
-        print("")
+        initial_node.update_children()
+
+        # Start the frontier information
+        self.frontier.append(initial_node)
+        # "Initial node is: \n"
+        # print(initial_node)
+        # print("\n")
+        checking_set = set()  # Initialize empty set to perform the checking easier
+
+        # Sanity Check in case initial state is the goal
+        # if self.frontier[0] == self.goal_state:
+        #     print("Solution is in the Frontier")
+        #     return True
+
+        while self.frontier:
+            print("\nFrontier is:\n")
+            print(self.get_frontier_elements())
+            print("\nExplored is:\n")
+            print(self.get_explored_elements())
+            # Get the first frontier Node to read
+            frontier_node = self.frontier.pop(0)
+            # print(frontier_node)
+            # Update the Frontier and the Explored Lists
+            self.explored.append(frontier_node)
+            self.nodes_visited += 1
+            checking_set.add(tuple(frontier_node.get_state()))
+
+            # Check if Node is Goal State
+            if frontier_node.get_state() == self.goal_state:
+                print("Solution Found.")
+                # self.get_node_backchain(frontier_node)
+                return True
+
+            # Append successors to the frontier list
+            children_frontier_node = frontier_node.get_children()
+            for child in children_frontier_node:
+                child_t = tuple(child)
+                if child_t in checking_set:
+                    continue
+                else:
+                    new_node = Node(state=child, parent=frontier_node, children=None)
+                    new_node.update_children()
+                    self.frontier.append(new_node)
