@@ -123,19 +123,31 @@ class CannibalMissionaryTree:
 
 class Node:
     def __init__(self, state, parent=None, children=None):
-        self.state = state
+        self.__state = state
         self.__parent = parent
         self.__children = children
 
-    def update_children(self):
-        problem = CannibalMissionaryTree(self.state)
-        self.children = problem.get_successor_states()
+    def get_state(self):
+        return self.__state
 
     def get_children(self):
         return self.__children
 
     def get_parent(self):
         return self.__parent
+
+    def __str__(self):
+        nodeInformation = "\n-----------------------\n"
+        nodeInformation += "Node Information is:"
+        nodeInformation += "\nNode state value{:s}"
+        nodeInformation += "\nNode parent: {:s}"
+        nodeInformation += "\nNode children: {:s}"
+        nodeInformation = nodeInformation.format(str(self.get_state()),str(self.get_parent()),str(self.get_parent()))
+        return nodeInformation
+
+    def update_children(self):
+        problem = CannibalMissionaryTree(self.get_state())
+        self.__children = problem.get_successor_states()
 
 
 class Solution:
