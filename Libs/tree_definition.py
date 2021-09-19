@@ -76,7 +76,7 @@ def is_state_safe(current_state, next_state, limits):
         return True
 
 
-class CannibalMissionaryTree:
+class CannibalMissionaryProblem:
     '''
     __init__: Declares how the tree will be initialized
         :arg
@@ -125,6 +125,17 @@ class CannibalMissionaryTree:
     def print_successor_states(self):
         print("Successor states are:", self.get_successor_states())
 
+    def __str__(self):
+        message = "\n_____________________________\n"
+        message += "Cannibals Missionary Problem:"
+        message += "\nStart state: "
+        message += str(self.current_state)
+        message += "\nInitial Number of Missionaries: "
+        message += str(self.__limits[0])
+        message += "\nInitial Number of Cannibals: "
+        message += str(self.__limits[0])
+        return message
+
 
 class Node:
     def __init__(self, state, parent=None, children=None):
@@ -152,7 +163,7 @@ class Node:
         return nodeInformation
 
     def update_children(self):
-        problem = CannibalMissionaryTree(self.get_state())
+        problem = CannibalMissionaryProblem(self.get_state())
         self.__children = problem.get_successor_states()
 
 
@@ -197,28 +208,20 @@ class Solution:
 
     def bfs_search(self):
         solutionFound = False
+
         # Initialize Node with the Start State Information
         initial_node = Node(self.start_state)
         initial_node.update_children()
 
         # Start the frontier information
         self.frontier.append(initial_node)
-        # "Initial node is: \n"
-        # print(initial_node)
-        # print("\n")
-        checking_set = set()  # Initialize empty set to perform the checking easier
+
+        # Initialize empty set to perform the checking easier
+        checking_set = set()
 
         while self.frontier:
-            # print("\nFrontier is:\n")
-            # print(self.get_frontier_elements())
-            # print("\nExplored is:\n")
-
-            # print(self.get_explored_elements())
-
-            # print(self.get_current_iteration_info())
             # Get the first frontier Node to read
             frontier_node = self.frontier.pop(0)
-            # print(frontier_node)
             # Update the Frontier and the Explored Lists
             self.explored.append(frontier_node)
             self.nodes_visited += 1
@@ -227,7 +230,7 @@ class Solution:
             # Check if Node is Goal State
             if frontier_node.get_state() == self.goal_state:
                 solutionFound = True
-                print("\nSolution Found using BFS Search at ...",self.nodes_visited)
+                print("\nSolution Found using BFS Search at ...", self.nodes_visited)
                 print(self.get_node_backchain(frontier_node))
                 return True
 
