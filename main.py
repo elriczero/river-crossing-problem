@@ -20,17 +20,16 @@ if __name__ == '__main__':
     # p = Person('Nikhil')
     # p.say_hi()
 
-    initialProblem = CannibalMissionaryTree((3, 3, 1))
-    initialProblem.print_current_state()
-    initialProblem.get_successor_states()
-    initialProblem.print_successor_states()
+    # initialProblem = CannibalMissionaryTree((3, 3, 1))
+    # initialProblem.print_current_state()
+    # initialProblem.get_successor_states()
+    # initialProblem.print_successor_states()
 
     # node = Node([3, 3, 1])
     # node.update_children()
     # print(node)
 
-    # solution = Solution([3, 3, 1], [0, 0, 0], "BFS")
-    # solution = Solution((3, 3, 1), (0, 0, 0))
-    # solution.bfs_search()
+    solution = Solution((3, 3, 1), (0, 0, 0))
+    solution.bfs_search()
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

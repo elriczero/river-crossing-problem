@@ -174,7 +174,17 @@ class Solution:
         for element in self.explored:
             element_list.append(element.get_state())
         return element_list
-
+    
+    def get_current_iteration_info(self):
+        message = "\n________________________________\n"
+        message += "Iteration No."
+        message += str(self.nodes_visited)
+        message += "\nFrontier is:\n"
+        message += str(self.get_frontier_elements())
+        message += "\nExplored is:\n"
+        message += str(self.get_explored_elements())
+        return message
+    
     def get_node_backchain(self, end_node):
         return_path = []
         while end_node:
@@ -184,6 +194,7 @@ class Solution:
         return return_path
 
     def bfs_search(self):
+        solutionFound = False
         # Initialize Node with the Start State Information
         initial_node = Node(self.start_state)
         initial_node.update_children()
@@ -195,16 +206,14 @@ class Solution:
         # print("\n")
         checking_set = set()  # Initialize empty set to perform the checking easier
 
-        # Sanity Check in case initial state is the goal
-        # if self.frontier[0] == self.goal_state:
-        #     print("Solution is in the Frontier")
-        #     return True
-
         while self.frontier:
-            print("\nFrontier is:\n")
-            print(self.get_frontier_elements())
-            print("\nExplored is:\n")
-            print(self.get_explored_elements())
+            # print("\nFrontier is:\n")
+            # print(self.get_frontier_elements())
+            # print("\nExplored is:\n")
+
+            # print(self.get_explored_elements())
+
+            print(self.get_current_iteration_info())
             # Get the first frontier Node to read
             frontier_node = self.frontier.pop(0)
             # print(frontier_node)
@@ -215,8 +224,9 @@ class Solution:
 
             # Check if Node is Goal State
             if frontier_node.get_state() == self.goal_state:
-                print("Solution Found.")
-                # self.get_node_backchain(frontier_node)
+                solutionFound = True
+                print("\nSolution Found...")
+                print(self.get_node_backchain(frontier_node))
                 return True
 
             # Append successors to the frontier list
@@ -229,3 +239,7 @@ class Solution:
                     new_node = Node(state=child, parent=frontier_node, children=None)
                     new_node.update_children()
                     self.frontier.append(new_node)
+        return solutionFound
+
+    def dfs_search(self):
+        solutionFound = False
