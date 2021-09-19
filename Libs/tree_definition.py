@@ -215,7 +215,7 @@ class Solution:
 
             # print(self.get_explored_elements())
 
-            print(self.get_current_iteration_info())
+            # print(self.get_current_iteration_info())
             # Get the first frontier Node to read
             frontier_node = self.frontier.pop(0)
             # print(frontier_node)
@@ -227,7 +227,7 @@ class Solution:
             # Check if Node is Goal State
             if frontier_node.get_state() == self.goal_state:
                 solutionFound = True
-                print("\nSolution Found...")
+                print("\nSolution Found using BFS Search at ...",self.nodes_visited)
                 print(self.get_node_backchain(frontier_node))
                 return True
 
@@ -257,7 +257,7 @@ class Solution:
         checking_set = set()  # Initialize empty set to perform the checking easier
 
         while self.frontier:
-            print(self.get_current_iteration_info())
+            # print(self.get_current_iteration_info())
             # Get the first frontier Node to read
             frontier_node = self.frontier.pop(0)
             # print(frontier_node)
@@ -269,7 +269,7 @@ class Solution:
             # Check if Node is Goal State
             if frontier_node.get_state() == self.goal_state:
                 solutionFound = True
-                print("\nSolution Found...")
+                print("\nSolution Found using DFS Search at...", self.nodes_visited)
                 print(self.get_node_backchain(frontier_node))
                 return True
 

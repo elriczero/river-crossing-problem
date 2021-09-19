@@ -29,8 +29,9 @@ if __name__ == '__main__':
     # node.update_children()
     # print(node)
 
-    solution = Solution((3, 3, 1), (0, 0, 0))
-    # solution.bfs_search()
-    solution.dfs_search()
+    solutionBFS = Solution((3, 3, 1), (0, 0, 0))
+    solutionBFS.bfs_search()
+    solutionDFS = Solution((3, 3, 1), (0, 0, 0))
+    solutionDFS.dfs_search()
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
