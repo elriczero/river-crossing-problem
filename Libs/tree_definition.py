@@ -2,6 +2,8 @@
 Tree definition for the cannibal and missionary problem
 '''
 
+from collections import deque
+
 
 def get_after_carry_states(input_state):
     missionary = input_state[0]
@@ -89,7 +91,7 @@ class CannibalMissionaryTree:
         self.__current_boat_position = current_state[2]
 
     '''
-    Defintion of getters and setters
+    Definition of getters and setters
     '''
 
     def get_cannibals(self):
@@ -110,15 +112,41 @@ class CannibalMissionaryTree:
         cannibal = self.get_cannibals()
         boat_position = self.get_boat_position()
         total_next_state = get_after_carry_states(self.current_state)
-        if boat_position == 0:
-            for state in total_next_state:
-                if is_state_safe(self.current_state, state):
-                    safe_next_states.append(state)
-        elif boat_position == 1:
-            for state in total_next_state:
-                if is_state_safe(self.current_state, state):
-                    safe_next_states.append(state)
+        for state in total_next_state:
+            if is_state_safe(self.current_state, state):
+                safe_next_states.append(state)
         return safe_next_states
 
     def print_successor_states(self):
-        print(self.get_successor_states())
+        print("Succesor states are:", self.get_successor_states())
+
+
+class Node:
+    def __init__(self, state, parent=None, children=None):
+        self.state = state
+        self.__parent = parent
+        self.__children = children
+
+    def update_children(self):
+        problem = CannibalMissionaryTree(self.state)
+        self.children = problem.get_successor_states()
+
+    def get_children(self):
+        return self.__children
+
+    def get_parent(self):
+        return self.__parent
+
+
+class Solution:
+    def __init__(self, search_method, start_state, goal_state):
+        self.frontier = []
+        self.explored = []
+        self.search_method = search_method  # Must be BFS or DFS
+        self.start_state = start_state
+        self.goal_state = goal_state
+
+    def search(self):
+        # Initialize Node with the Start State Information
+        initial_node = Node(self.start_state)
+        print("")

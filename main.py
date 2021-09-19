@@ -3,7 +3,7 @@
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 
-from treeDefinition import CannibalMissionaryTree
+from tree_definition import CannibalMissionaryTree
 
 
 def print_hi(name):
@@ -18,9 +18,9 @@ if __name__ == '__main__':
     # p = Person('Nikhil')
     # p.say_hi()
 
-    p = CannibalMissionaryTree([3, 3, 1])
-    p.print_current_state()
-    p.get_successor_states()
-    p.print_successor_states()
+    initialProblem = CannibalMissionaryTree([3, 3, 1])
+    initialProblem.print_current_state()
+    initialProblem.get_successor_states()
+    initialProblem.print_successor_states()
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
